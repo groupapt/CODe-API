@@ -1,8 +1,7 @@
 __author__ = 'Desira Daniel'
 
-from flask import Flask
-from flask import render_template
-from flask.json import dumps
+from flask import Flask, render_template
+from flask.json import jsonify
 from py2neo import neo4j
 
 app = Flask(__name__)
@@ -18,7 +17,7 @@ def query_db(statement):
 	    for property in r.values[0]:
 		    node[property] = r.values[0][property]
 	    dataset['response'].append(node)
-	return dumps(dataset)
+	return jsonify(dataset)
 
 @app.route('/')
 def index():
@@ -40,10 +39,10 @@ def def_pros_case(defendant, prosecutor):
 def def_cases(defendant):
 	return query_db('MATCH (case) WHERE case.defendant =~ \'' + defendant + '.*\' RETURN case')
 
-@app.route('/cases/prosecutor/<prosecutor>')
-def pros_cases(prosecutor):
-	return query_db('MATCH (case) WHERE case.prosecutor =~ \'Godf.*\' RETURN case')
-	#return query_db('MATCH (case) WHERE case.prosecutor =~ \'' + prosecutor + '.*\' RETURN case')
+@app.route('/cases/prosecutor/<prosecutor_surname>/<prosecutor_name>')
+def pros_cases(prosecutor_surname, prosecutor_name):
+
+	return query_db('MATCH (case) WHERE case.prosecutor =~ \'' + prosecutor_name + '.*\' RETURN case')
 
 @app.route('/cases/town/<town>')
 def town_cases(town):
@@ -59,7 +58,7 @@ def judge_surname_cases(judge_surname):
 
 @app.errorhandler(404)
 def not_found(error):
-	return render_template('error.json'), 404
+	return render_template('notfound.json'), 404
 
 if __name__ == '__main__':
 	app.run()
