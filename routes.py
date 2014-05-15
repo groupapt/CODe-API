@@ -10,26 +10,34 @@ app.debug = True
 
 def query_db(statement):
 	graph_db = neo4j.GraphDatabaseService()
-	result = neo4j.CypherQuery(graph_db, statement).execute()
+	return neo4j.CypherQuery(graph_db, statement).execute()
+
+def form_json(result):
 	dataset = {'response': []}
-	for r in result:
-	    node = {}
-	    for property in r.values[0]:
-		    node[property] = r.values[0][property]
-	    dataset['response'].append(node)
+	for record in result:
+		node = {}
+		for property in record.values[0]:
+			node[property] = record.values[0][property]
+		dataset['response'].append(node)
 	return jsonify(dataset)
 
-@app.route('/')
-def index():
-	return ''
+def query_cases_by_role(role, name, surname):
+	query_string = 'MATCH (case) WHERE case.' + role + ' =~ \'' + name + '.*\' AND case.' + role + ' =~ \'.*' + surname + '.*\' RETURN case'
+	result = query_db(query_string)
+	if result == None:
+		query_string = 'MATCH (case) WHERE case.' + role + ' =~ \'' + name + '.*\' OR case.' + role + ' =~ \'.*' + surname + '.*\' RETURN case'
+		result = query_db(query_string)
+	return result
 
-@app.route('/case/<reference>')
-def case(reference):
-	return query_db('MATCH (case) WHERE case.reference = \'' + reference + '\' RETURN case')
+@app.route('/case/<reference_p1>/<reference_p2>')
+def case(reference_p1, reference_p2):
+	result = query_db('MATCH (case) WHERE case.reference = \'' + reference_p1 + '/' + reference_p2 + '\' RETURN case')
+	return form_json(result)
 
 @app.route('/cases/year/<int:year>')
 def year_cases(year):
-	return 'year'
+	result = query_db('MATCH (date) WHERE date.year = ' + str(year) + ' RETURN date')
+	return form_json(result)
 
 @app.route('/case/<defendant>/<prosecutor>')
 def def_pros_case(defendant, prosecutor):
@@ -41,19 +49,14 @@ def def_cases(defendant):
 
 @app.route('/cases/prosecutor/<prosecutor_surname>/<prosecutor_name>')
 def pros_cases(prosecutor_surname, prosecutor_name):
-
-	return query_db('MATCH (case) WHERE case.prosecutor =~ \'' + prosecutor_name + '.*\' RETURN case')
+	return form_json(query_cases_by_role('prosecutor', prosecutor_name, prosecutor_surname))
 
 @app.route('/cases/town/<town>')
 def town_cases(town):
 	return ''
 
-@app.route('/cases/judges/<judge_name>')
-def judge_name_cases(judge_name):
-	pass
-
-@app.route('/cases/judges/<judge_surname>')
-def judge_surname_cases(judge_surname):
+@app.route('/cases/judges/<judge_surname>/<judge_name>')
+def judge_name_cases(judge_surname, judge_name):
 	pass
 
 @app.errorhandler(404)
