@@ -3,22 +3,22 @@ __author__ = 'Desira Daniel'
 from flask import Flask
 from flask import render_template
 from flask.json import dumps
-from py2neo import cypher
+from py2neo import neo4j
 
 app = Flask(__name__)
 app.debug = True
 
 
 def query_db(statement):
-	session = cypher.Session('http://localhost:7474')
-	transaction = session.create_transaction()
-
-	transaction.append(statement)
-	result = transaction.execute()
-	transaction.commit()
-	#print(dumps(result))
-
-	return result
+	graph_db = neo4j.GraphDatabaseService()
+	result = neo4j.CypherQuery(graph_db, statement).execute()
+	dataset = {'response': []}
+	for r in result:
+	    node = {}
+	    for property in r.values[0]:
+		    node[property] = r.values[0][property]
+	    dataset['response'].append(node)
+	return dumps(dataset)
 
 @app.route('/')
 def index():
