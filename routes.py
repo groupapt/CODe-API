@@ -8,9 +8,9 @@ app = Flask(__name__)
 app.debug = True
 
 
-def query_db(statement):
+def query_db(query_string):
 	graph_db = neo4j.GraphDatabaseService()
-	return neo4j.CypherQuery(graph_db, statement).execute()
+	return neo4j.CypherQuery(graph_db, query_string).execute()
 
 def form_json(result):
 	dataset = {'response': []}
@@ -31,7 +31,7 @@ def query_cases_by_role(role, name, surname):
 
 @app.route('/case/<reference_p1>/<reference_p2>')
 def case(reference_p1, reference_p2):
-	result = query_db('MATCH (case) WHERE case.reference = \'' + reference_p1 + '/' + reference_p2 + '\' RETURN case')
+	result = query_db('MATCH (case) WHERE case.reference = \'' + reference_p1 + '/' + reference_p2 + '\' RETURN case LIMIT 1')
 	return form_json(result)
 
 @app.route('/cases/year/<int:year>')
@@ -62,6 +62,10 @@ def judge_name_cases(judge_surname, judge_name):
 @app.errorhandler(404)
 def not_found(error):
 	return render_template('notfound.json'), 404
+
+@app.errorhandler(500)
+def internal_error(error):
+	return render_template('internalerror.json'), 500
 
 if __name__ == '__main__':
 	app.run()
