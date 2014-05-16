@@ -43,9 +43,9 @@ def year_cases(year):
 def def_pros_case(defendant, prosecutor):
 	pass
 
-@app.route('/cases/defendant/<defendant>')
-def def_cases(defendant):
-	return query_db('MATCH (case) WHERE case.defendant =~ \'' + defendant + '.*\' RETURN case')
+@app.route('/cases/defendant/<defendant_surname>/<defendant_name>')
+def def_cases(defendant_surname, defendant_name):
+	return form_json(query_cases_by_role('defendant', defendant_name, defendant_surname))
 
 @app.route('/cases/prosecutor/<prosecutor_surname>/<prosecutor_name>')
 def pros_cases(prosecutor_surname, prosecutor_name):
