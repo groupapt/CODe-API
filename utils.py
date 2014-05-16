@@ -20,6 +20,9 @@ def form_json(result):
 
 
 def query_cases_by_role(role, name, surname):
+	name = name[0].upper() + name[1:].lower()
+	surname = surname[0].lower() + surname[1:].lower()
+
 	query_str = 'MATCH (case) WHERE case.' + role + ' =~ "' + name + '.*" AND case.' + role + ' =~ ".*' + surname + '.*" RETURN case'
 	result = query_db(query_str)
 	if len(result) == 0:
