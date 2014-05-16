@@ -13,6 +13,12 @@ def case(reference_p1, reference_p2):
 	return form_json(result)
 
 
+@app.route('/cases/date/<date>')
+def date_cases(date):
+	result = query_db('MATCH (case) WHERE case.date = "' + date + '" RETURN case')
+	return form_json(result)
+
+
 @app.route('/cases/year/<int:year>')
 def year_cases(year):
 	result = query_db('MATCH (date)-[:HAS_CASES]->(case) WHERE date.year = "' + str(year) + '" RETURN case')
@@ -41,10 +47,15 @@ def judge_cases(judge_surname, judge_name):
 
 	query_str = 'MATCH (judge)-[:JUDGES]->(case) WHERE judge.j_surname =~ "' + judge_surname + '.*" AND judge.j_name =~ "' + judge_name + '.*" RETURN case'
 	result = query_db(query_str)
-	if result is None:
+	if len(result) == 0:
 		query_str = 'MATCH (judge)-[:JUDGES]->(case) WHERE judge.j_surname =~ "' + judge_surname + '.*" OR judge.j_name =~ "' + judge_name + '.*" RETURN case'
 		result = query_db(query_str)
 	return form_json(result)
+
+
+@app.route('/cases/keywords/<keywords>')
+def keywords_cases(keywords):
+	keywords = keywords.split(',')
 
 
 @app.errorhandler(404)
