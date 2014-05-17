@@ -4,32 +4,32 @@ REST API served from Civil Cases database
 
 ## API
 
-### /case/<reference_p1>/<reference_p2>
+### /case/{reference_p1}/{reference_p2}
 
-### /cases/date/<date>
+### /cases/date/{date}
 
-### /cases/year/<int:year>
+### /cases/year/{int:year}
 
 ### /cases/query
 
-### /cases/defendant/<defendant_surname>/<defendant_name>
+### /cases/defendant/{defendant_surname}/{defendant_name}
 
-### /cases/prosecutor/<prosecutor_surname>/<prosecutor_name>
+### /cases/prosecutor/{prosecutor_surname}/{prosecutor_name}
 
-### /cases/prosecutor/<prosecutor_surname>/<prosecutor_name>
+### /cases/prosecutor/{prosecutor_surname}/{prosecutor_name}
 
-### /cases/judges/<judge_surname>/<judge_name>
+### /cases/judges/{judge_surname}/{judge_name}
 
-### /cases/keywords/<keywords>
+### /cases/keywords/{keywords}
 
 ### 404 Error
 This will always look like:
-'''json
+``` json
 {"error": "Not found"}
-'''
+```
 
 ### 500 Error
 This will always look like:
-'''json
+``` json
 {"error": "Internal error"}
-'''
+```
