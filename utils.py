@@ -29,3 +29,29 @@ def query_cases_by_role(role, name, surname):
 		query_str = 'MATCH (case) WHERE case.' + role + ' =~ "' + name + '.*" OR case.' + role + ' =~ ".*' + surname + '.*" RETURN case'
 		result = query_db(query_str)
 	return result
+
+
+def advanced_cases_query(d_surname, d_name, p_surname, p_name, d_org = '', p_org = '', date = ''):
+	query_str = ''
+	if d_org != '':
+		query_str = 'MATCH (case) WHERE LOWER(case.defendant) =~ ".*' + d_org.lower() + '.*"'
+	elif d_name != '' or d_surname != '':
+		query_str = 'MATCH (case) WHERE case.defendant =~ "' + d_name + '.*" AND case.defendant =~ ".*' + d_surname + '.*"'
+
+	if p_org != '':
+		if query_str == '':
+			query_str = 'MATCH (case) LOWER(case.defendant) =~ ".*' + d_org.lower() + '.*"'
+		else:
+			query_str += ' AND LOWER(case.defendant) =~ ".*' + d_org.lower() + '.*"'
+	elif p_name != '' or d_surname != '':
+		if query_str == '':
+			query_str = 'MATCH (case) WHERE case.prosecutor =~ "' + p_name + '.*" AND case.prosecutor =~ ".*' + p_surname + '.*"'
+		else:
+			query_str += ' AND case.prosecutor =~ "' + p_name + '.*" AND case.prosecutor =~ ".*' + p_surname + '.*"'
+
+	if date != '':
+		query_str += ' AND case.date = "' + date + '"'
+
+	query_str += ' RETURN case'
+	print query_str
+	return query_db(query_str)

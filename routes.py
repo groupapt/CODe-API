@@ -1,7 +1,7 @@
 __author__ = 'Desira Daniel'
 
-from flask import Flask, render_template
-from utils import query_db, form_json, query_cases_by_role
+from flask import Flask, render_template, request
+from utils import query_db, form_json, query_cases_by_role, advanced_cases_query
 
 app = Flask(__name__)
 app.debug = True
@@ -25,9 +25,40 @@ def year_cases(year):
 	return form_json(result)
 
 
-@app.route('/case/<defendant>/<prosecutor>')
-def def_pros_case(defendant, prosecutor):
-	pass
+@app.route('/cases/query')
+def cases():
+	args = request.args
+
+	if args.get('d_surname') and args.get('d_name'):
+		d_surname = args.get('d_surname')
+		d_name = args.get('d_name')
+	else:
+		d_surname = ''
+		d_name = ''
+
+	if args.get('p_surname') and args.get('p_name'):
+		p_surname = args.get('p_surname')
+		p_name = args.get('p_name')
+	else:
+		p_surname = ''
+		p_name = ''
+
+	if args.get('d_org'):
+		d_org = args.get('d_org')
+	else:
+		d_org = ''
+
+	if args.get('p_org'):
+		p_org = args.get('p_org')
+	else:
+		p_org = ''
+
+	if args.get('date'):
+		date = args.get('date')
+	else:
+		date = ''
+
+	return form_json(advanced_cases_query(d_surname, d_name, p_surname, p_name, d_org, p_org, date))
 
 
 @app.route('/cases/defendant/<defendant_surname>/<defendant_name>')
