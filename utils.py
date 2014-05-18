@@ -31,27 +31,40 @@ def query_cases_by_role(role, name, surname):
 	return result
 
 
-def advanced_cases_query(d_surname, d_name, p_surname, p_name, d_org = '', p_org = '', date = ''):
-	query_str = ''
-	if d_org != '':
-		query_str = 'MATCH (case) WHERE LOWER(case.defendant) =~ ".*' + d_org.lower() + '.*"'
-	elif d_name != '' or d_surname != '':
-		query_str = 'MATCH (case) WHERE case.defendant =~ "' + d_name + '.*" AND case.defendant =~ ".*' + d_surname + '.*"'
+def is_string(str):
+    return type(str).__name__ == 'str'
 
-	if p_org != '':
-		if query_str == '':
-			query_str = 'MATCH (case) LOWER(case.defendant) =~ ".*' + d_org.lower() + '.*"'
+
+def advanced_cases_query(d_surname, d_name, p_surname, p_name, d_org = '', p_org = '',
+						 date = '', keywords = '', reference = '', appeals = 0):
+	query_str = 'MATCH (case)'
+
+	if appeals == '1':
+		query_str += '-[:`HAS_APPEAL`]->(appeal)'
+
+	if is_string(d_org):
+		query_str += ' WHERE LOWER(case.defendant) =~ ".*' + d_org.lower() + '.*"'
+	elif is_string(d_name) or is_string(d_surname):
+		query_str += ' WHERE case.defendant =~ "' + d_name + '.*" AND case.defendant =~ ".*' + d_surname + '.*"'
+
+	if is_string(p_org):
+		if query_str == 'MATCH (case)':
+			query_str += ' WHERE LOWER(case.defendant) =~ ".*' + d_org.lower() + '.*"'
 		else:
 			query_str += ' AND LOWER(case.defendant) =~ ".*' + d_org.lower() + '.*"'
-	elif p_name != '' or d_surname != '':
+	elif is_string(p_name) or is_string(d_surname):
 		if query_str == '':
 			query_str = 'MATCH (case) WHERE case.prosecutor =~ "' + p_name + '.*" AND case.prosecutor =~ ".*' + p_surname + '.*"'
 		else:
 			query_str += ' AND case.prosecutor =~ "' + p_name + '.*" AND case.prosecutor =~ ".*' + p_surname + '.*"'
 
-	if date != '':
+	if is_string(date):
+
 		query_str += ' AND case.date = "' + date + '"'
 
-	query_str += ' RETURN case'
-	print query_str
+	if appeals == '1':
+		query_str += ' RETURN appeal'
+	else:
+		query_str += ' RETURN case'
+
 	return query_db(query_str)

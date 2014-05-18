@@ -25,40 +25,26 @@ def year_cases(year):
 	return form_json(result)
 
 
-@app.route('/cases/query')
+@app.route('/cases/appeals')
+def appeals():
+    result = query_db('MATCH (case)-[:`HAS_APPEAL`]->(appeal) RETURN appeal')
+    return form_json(result)
+
+
+@app.route('/cases')
 def cases():
 	args = request.args
 
-	if args.get('d_surname') and args.get('d_name'):
-		d_surname = args.get('d_surname')
-		d_name = args.get('d_name')
-	else:
-		d_surname = ''
-		d_name = ''
-
-	if args.get('p_surname') and args.get('p_name'):
-		p_surname = args.get('p_surname')
-		p_name = args.get('p_name')
-	else:
-		p_surname = ''
-		p_name = ''
-
-	if args.get('d_org'):
-		d_org = args.get('d_org')
-	else:
-		d_org = ''
-
-	if args.get('p_org'):
-		p_org = args.get('p_org')
-	else:
-		p_org = ''
-
-	if args.get('date'):
-		date = args.get('date')
-	else:
-		date = ''
-
-	return form_json(advanced_cases_query(d_surname, d_name, p_surname, p_name, d_org, p_org, date))
+	return form_json(advanced_cases_query(d_surname=args.get('d_surname'),
+                                          d_name=args.get('d_name'),
+                                          p_surname=args.get('p_surname'),
+                                          p_name=args.get('p_name'),
+                                          d_org=args.get('d_org'),
+                                          p_org=args.get('p_org'),
+                                          date=args.get('date'),
+                                          keywords=args.get('keywords'),
+                                          reference=args.get('reference'),
+                                          appeals=args.get('appeals')))
 
 
 @app.route('/cases/defendant/<defendant_surname>/<defendant_name>')

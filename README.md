@@ -10,7 +10,9 @@ REST API served from Civil Cases database
 
 ### /cases/year/{int:year}
 
-### /cases/query
+### /cases/appeals
+
+### /cases
 
 ### /cases/defendant/{defendant_surname}/{defendant_name}
 
