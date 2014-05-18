@@ -32,15 +32,17 @@ def query_cases_by_role(role, name, surname):
 
 
 def is_string(str):
-    return type(str).__name__ == 'str'
+	return type(str).__name__ == 'str'
 
 
 def advanced_cases_query(d_surname, d_name, p_surname, p_name, d_org = '', p_org = '',
 						 date = '', keywords = '', reference = '', appeals = 0):
-	query_str = 'MATCH (case)'
+	query_str = 'MATCH (judge)-[]->(case)'
 
 	if appeals == '1':
-		query_str += '-[:`HAS_APPEAL`]->(appeal)'
+		query_str += '-[]->(appeal)'
+
+	query_str += '-[]->(court)'
 
 	if is_string(d_org):
 		query_str += ' WHERE LOWER(case.defendant) =~ ".*' + d_org.lower() + '.*"'
@@ -66,5 +68,7 @@ def advanced_cases_query(d_surname, d_name, p_surname, p_name, d_org = '', p_org
 		query_str += ' RETURN appeal'
 	else:
 		query_str += ' RETURN case'
+
+	query_str += ', judge, court'
 
 	return query_db(query_str)
