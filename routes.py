@@ -1,7 +1,7 @@
 __author__ = 'Desira Daniel'
 
 from flask import Flask, render_template, request
-from utils import query_db, form_json, query_cases_by_role, advanced_cases_query
+from utils import query_db, form_json, query_cases_by_role, advanced_cases_query, query_str_start, query_str_end
 
 app = Flask(__name__)
 app.debug = True
@@ -12,25 +12,28 @@ JSON_ROUTE = DEF_ROUTE + 'json/'
 
 @app.route(JSON_ROUTE + 'case/<reference_p1>/<reference_p2>')
 def case(reference_p1, reference_p2):
-	result = query_db('MATCH (case) WHERE case.reference = "' + reference_p1 + '/' + reference_p2 + '" RETURN case LIMIT 1')
+	query_str = query_str_start() + 'WHERE case.reference = "' + reference_p1 + '/' + reference_p2 + '"' + query_str_end() + ' LIMIT 1'
+	result = query_db(query_str)
 	return form_json(result)
 
 
 @app.route(JSON_ROUTE + 'cases/date/<date>')
 def date_cases(date):
-	result = query_db('MATCH (case) WHERE case.date = "' + date + '" RETURN case')
+	query_str = query_str_start() + 'WHERE case.date = "' + date + '"' + query_str_end()
+	result = query_db(query_str)
 	return form_json(result)
 
 
 @app.route(JSON_ROUTE + 'cases/year/<int:year>')
 def year_cases(year):
-	result = query_db('MATCH (date)-[:HAS_CASES]->(case) WHERE date.year = "' + str(year) + '" RETURN case')
+	query_str = 'MATCH (date)-[:HAS_CASES]->(case) WHERE date.year = "' + str(year) + '" RETURN case'
+	result = query_db(query_str)
 	return form_json(result)
 
 
 @app.route(JSON_ROUTE + 'cases/appeals')
 def appeals():
-	result = query_db('MATCH (case)-[:HAS_APPEAL]->(appeal) RETURN appeal')
+	result = query_db(query_str_start(True) + query_str_end(True))
 	return form_json(result)
 
 
@@ -65,10 +68,10 @@ def judge_cases(judge_surname, judge_name):
 	judge_surname = judge_surname.upper()
 	judge_name = judge_name.upper()
 
-	query_str = 'MATCH (judge)-[]->(case) WHERE judge.j_surname =~ "' + judge_surname + '.*" AND judge.j_name =~ "' + judge_name + '.*" RETURN case, judge'
+	query_str = query_str_start() + 'WHERE judge.j_surname =~ "' + judge_surname + '.*" AND judge.j_name =~ "' + judge_name + '.*"' + query_str_end()
 	result = query_db(query_str)
 	if len(result) == 0:
-		query_str = 'MATCH (judge)-[]->(case) WHERE judge.j_surname =~ "' + judge_surname + '.*" OR judge.j_name =~ "' + judge_name + '.*" RETURN case'
+		query_str = query_str_start() + 'WHERE judge.j_surname =~ "' + judge_surname + '.*" OR judge.j_name =~ "' + judge_name + '.*"' + query_str_end()
 		result = query_db(query_str)
 	return form_json(result)
 
@@ -76,10 +79,10 @@ def judge_cases(judge_surname, judge_name):
 @app.route(JSON_ROUTE + '/cases/keywords/<keywords>')
 def keywords_cases(keywords):
 	keywords = keywords.split(',')
-	query_str = 'MATCH (case) WHERE '
+	query_str = query_str_start() + 'WHERE '
 	for keyword in keywords:
 		query_str += '"' + keyword + '" IN case.keywords AND '
-	query_str += '1 = 1 RETURN case'
+	query_str += '1 = 1' + query_str_end()
 	return form_json(query_db(query_str))
 
 

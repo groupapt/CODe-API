@@ -13,8 +13,9 @@ def form_json(result):
 	dataset = {'response': []}
 	for record in result:
 		node = {}
-		for prop in record.values[0]:
-			node[prop] = record.values[0][prop]
+		for value in record.values:
+			for prop in value:
+				node[prop] = value[prop]
 		dataset['response'].append(node)
 	return jsonify(dataset)
 
@@ -23,16 +24,31 @@ def query_cases_by_role(role, name, surname):
 	name = name[0].upper() + name[1:].lower()
 	surname = surname[0].lower() + surname[1:].lower()
 
-	query_str = 'MATCH (case) WHERE case.' + role + ' =~ "' + name + '.*" AND case.' + role + ' =~ ".*' + surname + '.*" RETURN case'
+	query_str = query_str_start() + 'WHERE case.' + role + ' =~ "' + name + '.*" AND case.' + role + ' =~ ".*' + surname + '.*"' + query_str_end()
 	result = query_db(query_str)
 	if len(result) == 0:
-		query_str = 'MATCH (case) WHERE case.' + role + ' =~ "' + name + '.*" OR case.' + role + ' =~ ".*' + surname + '.*" RETURN case'
+		query_str = query_str_start() + 'WHERE case.' + role + ' =~ "' + name + '.*" OR case.' + role + ' =~ ".*' + surname + '.*"' + query_str_end()
 		result = query_db(query_str)
 	return result
 
 
 def is_string(str):
 	return type(str).__name__ == 'str'
+
+
+def query_str_start(appeal_check = False):
+	query_str = 'MATCH (judge)-[]->(case)'
+	if appeal_check:
+		query_str += '-[]->(appeal)'
+	query_str += '-[]->(court) '
+	return query_str
+
+
+def query_str_end(appeal_check = False):
+	query_str = ' RETURN judge, court, case'
+	if appeal_check:
+		query_str += ', appeal'
+	return query_str
 
 
 def advanced_cases_query(d_surname, d_name, p_surname, p_name, d_org = '', p_org = '',
