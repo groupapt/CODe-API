@@ -6,32 +6,35 @@ from utils import query_db, form_json, query_cases_by_role, advanced_cases_query
 app = Flask(__name__)
 app.debug = True
 
+DEF_ROUTE = '/api/0.1/'
+JSON_ROUTE = DEF_ROUTE + 'json/'
 
-@app.route('/case/<reference_p1>/<reference_p2>')
+
+@app.route(JSON_ROUTE + 'case/<reference_p1>/<reference_p2>')
 def case(reference_p1, reference_p2):
 	result = query_db('MATCH (case) WHERE case.reference = "' + reference_p1 + '/' + reference_p2 + '" RETURN case LIMIT 1')
 	return form_json(result)
 
 
-@app.route('/cases/date/<date>')
+@app.route(JSON_ROUTE + 'cases/date/<date>')
 def date_cases(date):
 	result = query_db('MATCH (case) WHERE case.date = "' + date + '" RETURN case')
 	return form_json(result)
 
 
-@app.route('/cases/year/<int:year>')
+@app.route(JSON_ROUTE + 'cases/year/<int:year>')
 def year_cases(year):
 	result = query_db('MATCH (date)-[:HAS_CASES]->(case) WHERE date.year = "' + str(year) + '" RETURN case')
 	return form_json(result)
 
 
-@app.route('/cases/appeals')
+@app.route(JSON_ROUTE + 'cases/appeals')
 def appeals():
 	result = query_db('MATCH (case)-[:HAS_APPEAL]->(appeal) RETURN appeal')
 	return form_json(result)
 
 
-@app.route('/cases')
+@app.route(JSON_ROUTE + 'cases')
 def cases():
 	args = request.args
 
@@ -47,17 +50,17 @@ def cases():
 										  appeals=args.get('appeals')))
 
 
-@app.route('/cases/defendant/<defendant_surname>/<defendant_name>')
+@app.route(JSON_ROUTE + 'cases/defendant/<defendant_surname>/<defendant_name>')
 def def_cases(defendant_surname, defendant_name):
 	return form_json(query_cases_by_role('defendant', defendant_name, defendant_surname))
 
 
-@app.route('/cases/prosecutor/<prosecutor_surname>/<prosecutor_name>')
+@app.route(JSON_ROUTE +'/cases/prosecutor/<prosecutor_surname>/<prosecutor_name>')
 def pros_cases(prosecutor_surname, prosecutor_name):
 	return form_json(query_cases_by_role('prosecutor', prosecutor_name, prosecutor_surname))
 
 
-@app.route('/cases/judges/<judge_surname>/<judge_name>')
+@app.route(JSON_ROUTE + '/cases/judges/<judge_surname>/<judge_name>')
 def judge_cases(judge_surname, judge_name):
 	judge_surname = judge_surname.upper()
 	judge_name = judge_name.upper()
@@ -70,7 +73,7 @@ def judge_cases(judge_surname, judge_name):
 	return form_json(result)
 
 
-@app.route('/cases/keywords/<keywords>')
+@app.route(JSON_ROUTE + '/cases/keywords/<keywords>')
 def keywords_cases(keywords):
 	keywords = keywords.split(',')
 	query_str = 'MATCH (case) WHERE '
