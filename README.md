@@ -1,6 +1,14 @@
 # CODe API
 REST API served from Civil Cases database
 
+## Prerequisites
+The API is written in Python and makes use of the following libraries:
+* Flask: A popular microframework to ease routing
+* py2neo: To connect to the Neo4J database
+
+These libraries are to be installed through Pip or as instructed by their
+maintainers.
+
 ## API
 In URLs listed here, the following notations are used accordingly:
 
