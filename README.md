@@ -12,7 +12,26 @@ The base URL, one should use in order to access any method is
 
 The following is the standard sample output:
 ``` json
-
+{
+  "response": [
+    {
+      "court_name": "The Administrative Review Tribunal",
+      "date": "2013-01-25",
+      "defendant": " Awtorit\u00e0 ghat-Trasport f\u2019Malta ",
+      "judge": "Gabriella Vella",
+      "keywords": [
+        "\u201c22",
+        "nghaw",
+        "l-Awtorit\u00e0",
+        "ml-",
+        "moghtija"
+      ],
+      "pdf": "script_get_judgement_document.aspx?CaseJudgementID=78919",
+      "prosecutor": "Joseph Bajada (Karta ta\u2019 l-Identit\u00e0 bin-Numru 24466G) u S B Autocentre Limited (C-16378) ",
+      "reference": "1/2011/1"
+    }
+  ]
+}
 ```
 
 ### /case/{int:reference_p1}/{int:reference_p2}

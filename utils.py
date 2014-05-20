@@ -15,7 +15,13 @@ def form_json(result):
 		node = {}
 		for value in record.values:
 			for prop in value:
-				node[prop] = value[prop]
+				if prop != 'j_surname':
+					node[prop] = value[prop]
+				else:
+					j_name = value['j_name']
+					j_surname = value['j_surname']
+					node['judge'] = j_name[0] + j_name[1:].lower() + ' ' + j_surname[0] + j_surname[1:].lower()
+					break
 		dataset['response'].append(node)
 	return jsonify(dataset)
 
