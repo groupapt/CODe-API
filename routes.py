@@ -10,9 +10,21 @@ DEF_ROUTE = '/api/0.1/'
 JSON_ROUTE = DEF_ROUTE + 'json/'
 
 
-@app.route(JSON_ROUTE + 'case/<reference_p1>/<reference_p2>')
+@app.route(JSON_ROUTE + 'case/<int:reference_p1>/<int:reference_p2>')
 def case(reference_p1, reference_p2):
+	reference_p1 = str(reference_p1)
+	reference_p2 = str(reference_p2)
 	query_str = query_str_start() + 'WHERE case.reference = "' + reference_p1 + '/' + reference_p2 + '"' + query_str_end() + ' LIMIT 1'
+	result = query_db(query_str)
+	return form_json(result)
+
+
+@app.route(JSON_ROUTE + 'appeal/<int:reference_p1>/<int:reference_p2>/<int:reference_p3>')
+def appeal(reference_p1, reference_p2, reference_p3):
+	reference_p1 = str(reference_p1)
+	reference_p2 = str(reference_p2)
+	reference_p3 = str(reference_p3)
+	query_str = query_str_start(True) + 'WHERE appeal.reference = "' + reference_p1 + '/' + reference_p2 + '/' + reference_p3 + '"' + query_str_end(True) + ' LIMIT 1'
 	result = query_db(query_str)
 	return form_json(result)
 
