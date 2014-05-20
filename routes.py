@@ -42,6 +42,13 @@ def appeals():
 	return form_json(result)
 
 
+@app.route(JSON_ROUTE + 'cases/appeals/<int:reference_p1>/<int:reference_p2>')
+def appeals_by_case_reference(reference_p1, reference_p2):
+	query_str = query_str_start(True) + 'WHERE case.reference = "' + str(reference_p1) + '/' + str(reference_p2) + '"' + query_str_end(True) + ' LIMIT 1'
+	result = query_db(query_str)
+	return form_json(result)
+
+
 @app.route(JSON_ROUTE + 'cases')
 def cases():
 	args = request.args
@@ -65,10 +72,10 @@ def party_surname_name_cases(surname, name):
 
 @app.route(JSON_ROUTE + 'cases/party')
 def party_cases():
-    surname = request.args.get('surname')
-    name = request.args.get('name')
+	surname = request.args.get('surname')
+	name = request.args.get('name')
 
-    return form_json(query_cases_by_party(name, surname))
+	return form_json(query_cases_by_party(name, surname))
 
 
 @app.route(JSON_ROUTE + 'cases/judges/<judge_surname>/<judge_name>')

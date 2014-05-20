@@ -16,10 +16,12 @@ The following is the standard sample output:
 ```
 
 ### /case/{int:reference_p1}/{int:reference_p2}
-
+Sample call:
+`` http://localhost:5000/api/0.1/json/case/1/2011 ``
 
 ### /appeal/{int:reference_p1}/{int:reference_p2}/{int:reference_p3}
-
+Sample call:
+`` http://localhost:5000/api/0.1/json/appeal/1/2011/1 ``
 
 ### /cases/date/{date}
 where date should have the following structure:
