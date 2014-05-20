@@ -1,7 +1,7 @@
 __author__ = 'Desira Daniel'
 
 from flask import Flask, render_template, request
-from utils import query_db, form_json, query_cases_by_role, advanced_cases_query, query_str_start, query_str_end
+from utils import query_db, form_json, query_cases_by_party, advanced_cases_query, query_str_start, query_str_end
 
 app = Flask(__name__)
 app.debug = True
@@ -36,13 +36,6 @@ def date_cases(date):
 	return form_json(result)
 
 
-@app.route(JSON_ROUTE + 'cases/year/<int:year>')
-def year_cases(year):
-	query_str = 'MATCH (date)-[:HAS_CASES]->(case) WHERE date.year = "' + str(year) + '" RETURN case'
-	result = query_db(query_str)
-	return form_json(result)
-
-
 @app.route(JSON_ROUTE + 'cases/appeals')
 def appeals():
 	result = query_db(query_str_start(True) + query_str_end(True))
@@ -65,14 +58,17 @@ def cases():
 										  appeals=args.get('appeals')))
 
 
-@app.route(JSON_ROUTE + 'cases/defendant/<defendant_surname>/<defendant_name>')
-def def_cases(defendant_surname, defendant_name):
-	return form_json(query_cases_by_role('defendant', defendant_name, defendant_surname))
+@app.route(JSON_ROUTE + 'cases/party/<surname>/<name>')
+def party_surname_name_cases(surname, name):
+	return form_json(query_cases_by_party(name, surname))
 
 
-@app.route(JSON_ROUTE +'cases/prosecutor/<prosecutor_surname>/<prosecutor_name>')
-def pros_cases(prosecutor_surname, prosecutor_name):
-	return form_json(query_cases_by_role('prosecutor', prosecutor_name, prosecutor_surname))
+@app.route(JSON_ROUTE + 'cases/party')
+def party_cases():
+    surname = request.args.get('surname')
+    name = request.args.get('name')
+
+    return form_json(query_cases_by_party(name, surname))
 
 
 @app.route(JSON_ROUTE + 'cases/judges/<judge_surname>/<judge_name>')

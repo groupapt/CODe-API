@@ -20,14 +20,14 @@ def form_json(result):
 	return jsonify(dataset)
 
 
-def query_cases_by_role(role, name, surname):
+def query_cases_by_party(name, surname):
 	name = name[0].upper() + name[1:].lower()
 	surname = surname[0].lower() + surname[1:].lower()
 
-	query_str = query_str_start() + 'WHERE case.' + role + ' =~ "' + name + '.*" AND case.' + role + ' =~ ".*' + surname + '.*"' + query_str_end()
+	query_str = query_str_start() + 'WHERE case.defendant =~ "' + name + '.*" AND case.defendant =~ ".*' + surname + '.*" OR case.prosecutor =~ "' + name + '.*" AND case.defendant =~ ".*' + surname + '.*"' + query_str_end()
 	result = query_db(query_str)
 	if len(result) == 0:
-		query_str = query_str_start() + 'WHERE case.' + role + ' =~ "' + name + '.*" OR case.' + role + ' =~ ".*' + surname + '.*"' + query_str_end()
+		query_str = query_str_start() + 'WHERE case.defendant =~ "' + name + '.*" OR case.defendant =~ ".*' + surname + '.*" OR case.prosecutor =~ "' + name + '.*" OR case.defendant =~ ".*' + surname + '.*"' + query_str_end()
 		result = query_db(query_str)
 	return result
 
