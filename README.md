@@ -53,18 +53,29 @@ Sample call:
 N.B.: This method is currently outputting duplicate results, due to the internal relationship between case
 and appeal nodes.
 
+Sample call:
+`` http://localhost:5000/api/0.1/json/cases/appeals ``
+
 ### /cases
-Deprecrated
+Deprecated
 
 ### /cases/party/{surname}/{name}
+Searches party by prosecutor or defendant name and surname. If no party with the specified name and surname
+is found, an either or condition is applied on the two parameters.
+
 Sample call:
 `` http://localhost:5000/api/0.1/json/cases/party/gillford/brian ``
 
 ### /cases/party
 Similar to `` /cases/party/{surname}/{name} `` above.
 
+Sample call:
+`` http://localhost:5000/api/0.1/json/cases/party?surname=gillford&name=brian ``
+
 GET parameters:
 
+* name
+* surname
 
 ### /cases/keywords/{keywords}
 
