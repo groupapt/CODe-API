@@ -70,12 +70,12 @@ def def_cases(defendant_surname, defendant_name):
 	return form_json(query_cases_by_role('defendant', defendant_name, defendant_surname))
 
 
-@app.route(JSON_ROUTE +'/cases/prosecutor/<prosecutor_surname>/<prosecutor_name>')
+@app.route(JSON_ROUTE +'cases/prosecutor/<prosecutor_surname>/<prosecutor_name>')
 def pros_cases(prosecutor_surname, prosecutor_name):
 	return form_json(query_cases_by_role('prosecutor', prosecutor_name, prosecutor_surname))
 
 
-@app.route(JSON_ROUTE + '/cases/judges/<judge_surname>/<judge_name>')
+@app.route(JSON_ROUTE + 'cases/judges/<judge_surname>/<judge_name>')
 def judge_cases(judge_surname, judge_name):
 	judge_surname = judge_surname.upper()
 	judge_name = judge_name.upper()
@@ -88,7 +88,7 @@ def judge_cases(judge_surname, judge_name):
 	return form_json(result)
 
 
-@app.route(JSON_ROUTE + '/cases/keywords/<keywords>')
+@app.route(JSON_ROUTE + 'cases/keywords/<keywords>')
 def keywords_cases(keywords):
 	keywords = keywords.split(',')
 	query_str = query_str_start() + 'WHERE '
