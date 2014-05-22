@@ -1,7 +1,7 @@
 __author__ = 'Desira Daniel'
 
 from flask import Flask, render_template, request
-from utils import query_db, form_json, query_cases_by_party, advanced_cases_query, query_str_start, query_str_end
+from utils import query_db, form_json, query_cases_by_party, advanced_cases_query, query_str_start, query_str_end, query_cases_by_judge
 
 app = Flask(__name__)
 app.debug = True
@@ -78,17 +78,17 @@ def party_cases():
 	return form_json(query_cases_by_party(name, surname))
 
 
-@app.route(JSON_ROUTE + 'cases/judges/<judge_surname>/<judge_name>')
-def judge_cases(judge_surname, judge_name):
-	judge_surname = judge_surname.upper()
-	judge_name = judge_name.upper()
+@app.route(JSON_ROUTE + 'cases/judge/<judge_surname>/<judge_name>')
+def judge_surname_name_cases(judge_surname, judge_name):
+	return query_cases_by_judge(judge_name, judge_surname)
 
-	query_str = query_str_start() + 'WHERE judge.j_surname =~ "' + judge_surname + '.*" AND judge.j_name =~ "' + judge_name + '.*"' + query_str_end()
-	result = query_db(query_str)
-	if len(result) == 0:
-		query_str = query_str_start() + 'WHERE judge.j_surname =~ "' + judge_surname + '.*" OR judge.j_name =~ "' + judge_name + '.*"' + query_str_end()
-		result = query_db(query_str)
-	return form_json(result)
+
+@app.route(JSON_ROUTE + 'cases/judge')
+def judge_cases():
+	surname = request.args.get('surname')
+	name = request.args.get('name')
+
+	return query_cases_by_judge(name, surname)
 
 
 @app.route(JSON_ROUTE + 'cases/keywords/<keywords>')

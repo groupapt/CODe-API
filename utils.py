@@ -38,6 +38,18 @@ def query_cases_by_party(name, surname):
 	return result
 
 
+def query_cases_by_judge(name, surname):
+	surname = surname.upper()
+	name = name.upper()
+
+	query_str = query_str_start() + 'WHERE judge.j_surname =~ "' + surname + '.*" AND judge.j_name =~ "' + name + '.*"' + query_str_end()
+	result = query_db(query_str)
+	if len(result) == 0:
+		query_str = query_str_start() + 'WHERE judge.j_surname =~ "' + surname + '.*" OR judge.j_name =~ "' + name + '.*"' + query_str_end()
+		result = query_db(query_str)
+	return form_json(result)
+
+
 def is_string(str):
 	return type(str).__name__ == 'str'
 
