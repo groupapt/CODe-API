@@ -43,16 +43,22 @@ The following is the standard sample output:
 ```
 
 ### /case/{int:reference_p1}/{int:reference_p2}
+Outputs a case matching a given reference.
+
 Sample call:
 `` http://localhost:5000/api/0.1/json/case/1/2011 ``
 
 ### /appeal/{int:reference_p1}/{int:reference_p2}/{int:reference_p3}
+Outputs an appeal matching a given reference.
+
 Sample call:
 `` http://localhost:5000/api/0.1/json/appeal/1/2011/1 ``
 
 ### /cases/date/{date}
 where date should have the following structure:
 `` year-month-day ``
+
+Searches by date.
 
 Sample call:
 `` http://localhost:5000/api/0.1/json/cases/date/2011-05-13 ``
@@ -68,7 +74,7 @@ Deprecated (for now)
 
 
 ### /cases/party/{surname}/{name}
-Searches party by prosecutor or defendant name and surname. If no party with the specified name and surname
+Searches by party which could be either prosecutor or defendant. If no party with the specified name and surname
 is found, an either or condition is applied on the two parameters.
 
 Sample call:
