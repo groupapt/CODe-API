@@ -58,14 +58,14 @@ Sample call:
 `` http://localhost:5000/api/0.1/json/cases/date/2011-05-13 ``
 
 ### /cases/appeals
-N.B.: This method is currently outputting duplicate results, due to the internal relationship between case
-and appeal nodes.
+Outputs all appeals.
 
 Sample call:
 `` http://localhost:5000/api/0.1/json/cases/appeals ``
 
 ### /cases
-Deprecated
+Deprecated (for now)
+
 
 ### /cases/party/{surname}/{name}
 Searches party by prosecutor or defendant name and surname. If no party with the specified name and surname
@@ -75,7 +75,7 @@ Sample call:
 `` http://localhost:5000/api/0.1/json/cases/party/gillford/brian ``
 
 ### /cases/party
-Similar to `` /cases/party/{surname}/{name} `` above.
+Similar to `` /cases/party/{surname}/{name} `` above, but name and surname can be in any order.
 
 Sample call:
 `` http://localhost:5000/api/0.1/json/cases/party?surname=gillford&name=brian ``
@@ -85,7 +85,31 @@ GET parameters:
 * name
 * surname
 
+### /cases/judge/{surname}/{name}
+Searches for cases by judge name and surname.
+
+Sample call:
+`` http://localhost:5000/api/0.1/json/cases/judge/vella/gabriella ``
+
+### /cases/judge
+Similar to `` /cases/judge/{surname}/{name} `` above, but name and surname can be in any order.
+
+Sample call:
+`` http://localhost:5000/api/0.1/json/cases/judge ``
+
+GET parameters:
+
+* name
+* surname
+
 ### /cases/keywords/{keywords}
+where keywords is a list of keywords seperated by a comma.
+
+Outputs all cases associated to those particular keywords.
+
+Sample calls:
+`` http://localhost:5000/api/0.1/json/cases/keywords/qtil ``
+`` http://localhost:5000/api/0.1/json/cases/keywords/serqa, bank ``
 
 ### 404 Error
 Output:
