@@ -2,6 +2,7 @@ __author__ = 'Desira Daniel'
 
 from flask import Flask, render_template, request
 from utils import query_db, form_json, query_cases_by_party, advanced_cases_query, query_str_start, query_str_end, query_cases_by_judge
+from keywords import generate_keywords
 
 app = Flask(__name__)
 app.debug = True
@@ -91,9 +92,9 @@ def judge_cases():
 	return query_cases_by_judge(name, surname)
 
 
-@app.route(JSON_ROUTE + 'cases/keywords/<keywords>')
-def keywords_cases(keywords):
-	keywords = keywords.split(',')
+@app.route(JSON_ROUTE + 'cases/keywords/<text>')
+def keywords_cases(text):
+	keywords = generate_keywords(text)
 	query_str = query_str_start() + 'WHERE '
 	for keyword in keywords:
 		query_str += '"' + keyword + '" IN case.keywords AND '

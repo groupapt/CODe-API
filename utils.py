@@ -1,6 +1,6 @@
 __author__ = 'Desira Daniel'
 
-from flask.json import jsonify
+from flask.json import dumps
 from py2neo import neo4j
 
 
@@ -8,6 +8,11 @@ def query_db(query_str):
 	graph_db = neo4j.GraphDatabaseService()
 	return neo4j.CypherQuery(graph_db, query_str).execute()
 
+'''
+Iterates a Neo4j result set and produces a JSON string
+@param result DB result set
+@return JSON string
+'''
 
 def form_json(result):
 	dataset = {'response': []}
@@ -23,7 +28,7 @@ def form_json(result):
 					node['judge'] = j_name[0] + j_name[1:].lower() + ' ' + j_surname[0] + j_surname[1:].lower()
 					break
 		dataset['response'].append(node)
-	return jsonify(dataset)
+	return dumps(dataset)
 
 
 def query_cases_by_party(name, surname):

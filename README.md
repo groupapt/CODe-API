@@ -108,14 +108,14 @@ GET parameters:
 * name
 * surname
 
-### /cases/keywords/{keywords}
+### /cases/keywords/{text}
 where keywords is a list of keywords seperated by a comma.
 
 Outputs all cases associated to those particular keywords.
 
 Sample calls:
 `` http://localhost:5000/api/0.1/json/cases/keywords/qtil ``
-`` http://localhost:5000/api/0.1/json/cases/keywords/serqa, bank ``
+`` http://localhost:5000/api/0.1/json/cases/keywords/serqa go bank ``
 
 ### 404 Error
 Output:
